@@ -20,5 +20,5 @@ class ButtonText:
 
 class BotReplies:
     USER_NAME = "Type your name (ex. Name Surname)"
-    USER_NAME_UPLOADED = "done"
-    ALSO_REGISTERED = "REGISTERED"
+    USER_NAME_UPLOADED = "Thanks for registration"
+    ALSO_REGISTERED = "You also registered"
