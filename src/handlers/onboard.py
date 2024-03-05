@@ -18,7 +18,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             client,
             filter=f"tg_id=(tg_id='{update.effective_user.id}')",
         )
-        
+
         if len(user_["items"]) != 0:
             user = user_["items"][0]
 
@@ -52,16 +52,11 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return 1
 
 
-async def user_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(update.effective_chat.id, BotReplies.USER_NAME)
-    return 2
-
-
 async def get_user_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     async with aiohttp.ClientSession() as client:
         user = await fetch_user(update.effective_user.id, PB, client)
-        
+
         await PB.update_record(
             PocketbaseCollections.USERS, user["id"], client, name=update.message.text
         )
