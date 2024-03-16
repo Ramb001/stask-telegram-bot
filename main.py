@@ -6,11 +6,17 @@ from telegram.ext import (
     ConversationHandler,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler,
     filters,
 )
 
-from src.constants import TOKEN
-from src.handlers.onboard import start_handler, get_user_name_handler
+from src.constants import TOKEN, CallbackQuery
+from src.handlers.onboard import (
+    start_handler,
+    yes_ref_link_handler,
+    no_ref_link_handler,
+    add_to_org_handler,
+)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -24,7 +30,11 @@ def main():
     onboard_conv = ConversationHandler(
         entry_points=[CommandHandler("start", start_handler)],
         states={
-            1: [MessageHandler(filters.TEXT, get_user_name_handler)],
+            1: [
+                CallbackQueryHandler(yes_ref_link_handler, CallbackQuery.YES_REF),
+                CallbackQueryHandler(no_ref_link_handler, CallbackQuery.NO_REF),
+            ],
+            2: [MessageHandler(filters.TEXT, add_to_org_handler)],
         },
         fallbacks=[],
     )

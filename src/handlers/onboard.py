@@ -5,7 +5,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 from telegram.constants import ChatAction
 
 from src.constants import PB, PocketbaseCollections, BotReplies
-from src.keyboards import MAIN_KEYBOARD
+from src.keyboards import MAIN_KEYBOARD, ON_BOARD_KEYBOARD
 from src.helpers import fetch_user
 
 
@@ -19,23 +19,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             filter=f"tg_id=(tg_id='{update.effective_user.id}')",
         )
 
-        if len(user_["items"]) != 0:
-            user = user_["items"][0]
-
-            if user["name"] != "":
-                await update.message.reply_text(
-                    BotReplies.ALSO_REGISTERED, reply_markup=MAIN_KEYBOARD
-                )
-
-                return ConversationHandler.END
-
-            else:
-                await update.message.reply_text(
-                    BotReplies.USER_NAME,
-                    reply_markup=MAIN_KEYBOARD,
-                )
-
-        else:
+        if len(user_["items"]) == 0:
             await PB.add_record(
                 PocketbaseCollections.USERS,
                 client,
@@ -44,23 +28,67 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 chat_id=update.effective_chat.id,
             )
 
-            await update.message.reply_text(
-                BotReplies.USER_NAME,
-                reply_markup=MAIN_KEYBOARD,
-            )
+    await update.message.reply_text(
+        BotReplies.HAVE_REF,
+        reply_markup=ON_BOARD_KEYBOARD,
+    )
 
     return 1
 
 
-async def get_user_name_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def yes_ref_link_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    await context.bot.send_message(
+        update.effective_chat.id, BotReplies.SEND_REF_LINK, reply_markup=""
+    )
+
+    return 2
+
+
+async def add_to_org_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if update.message.text is None:
+        return 2
 
     async with aiohttp.ClientSession() as client:
-        user = await fetch_user(update.effective_user.id, PB, client)
-
-        await PB.update_record(
-            PocketbaseCollections.USERS, user["id"], client, name=update.message.text
+        organization_ = await PB.fetch_records(
+            PocketbaseCollections.ORGANIZATIONS,
+            client,
+            filter=f"(ref_link='{update.message.text}')",
         )
 
-    await update.message.reply_text(BotReplies.USER_NAME_UPLOADED)
+        if len(organization_["items"]) == 0:
+            await context.bot.send_message(
+                update.effective_chat.id,
+                BotReplies.NO_ORGANIZATIONS_BY_LINK,
+                reply_markup=MAIN_KEYBOARD,
+            )
+        else:
+            organization = organization_["items"][0]
+
+            user = await fetch_user(update.effective_user.id, PB, client)
+
+            await PB.update_record(
+                PocketbaseCollections.ORGANIZATIONS,
+                organization["id"],
+                client,
+                workers=user["id"],
+            )
+
+            await context.bot.send_message(
+                update.effective_chat.id,
+                BotReplies.ADDED_TO_ORGANIZATION.format(
+                    organization_name=organization["name"]
+                ),
+                reply_markup=MAIN_KEYBOARD,
+            )
+
+    return ConversationHandler.END
+
+
+async def no_ref_link_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(
+        update.effective_chat.id, BotReplies.WELCOME, reply_markup=MAIN_KEYBOARD
+    )
 
     return ConversationHandler.END
