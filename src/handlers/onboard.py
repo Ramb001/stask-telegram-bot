@@ -5,7 +5,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 from telegram.constants import ChatAction
 
 from src.constants import PB, PocketbaseCollections, BotReplies
-from src.keyboards import MAIN_KEYBOARD, ON_BOARD_KEYBOARD
+from src.keyboards import ON_BOARD_KEYBOARD, create_main_keyboard
 from src.helpers import fetch_user
 
 
@@ -61,7 +61,7 @@ async def add_to_org_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
             await context.bot.send_message(
                 update.effective_chat.id,
                 BotReplies.NO_ORGANIZATIONS_BY_LINK,
-                reply_markup=MAIN_KEYBOARD,
+                reply_markup=create_main_keyboard(update),
             )
         else:
             organization = organization_["items"][0]
@@ -80,7 +80,7 @@ async def add_to_org_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 BotReplies.ADDED_TO_ORGANIZATION.format(
                     organization_name=organization["name"]
                 ),
-                reply_markup=MAIN_KEYBOARD,
+                reply_markup=create_main_keyboard(update),
             )
 
     return ConversationHandler.END
@@ -88,7 +88,9 @@ async def add_to_org_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def no_ref_link_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
-        update.effective_chat.id, BotReplies.WELCOME, reply_markup=MAIN_KEYBOARD
+        update.effective_chat.id,
+        BotReplies.WELCOME,
+        reply_markup=create_main_keyboard(update),
     )
 
     return ConversationHandler.END

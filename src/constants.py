@@ -6,7 +6,7 @@ from src.pocketbase import Pocketbase
 POCKETBASE_URL = "http://127.0.0.1:8090"
 PB = Pocketbase(POCKETBASE_URL)
 TOKEN = os.getenv("STASK_BOT_TOKEN")
-WEB_APP_URL = "https://33d9-178-66-131-169.ngrok-free.app"
+WEB_APP_URL = "https://1de8-188-170-86-91.ngrok-free.app"
 
 
 class PocketbaseCollections:

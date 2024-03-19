@@ -4,21 +4,37 @@ from telegram import (
     WebAppInfo,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
+    Update,
 )
+from urllib.parse import urlencode
 
 from src.constants import ButtonText, WEB_APP_URL, CallbackQuery
 
-MAIN_KEYBOARD = ReplyKeyboardMarkup(
-    [
-        [KeyboardButton(ButtonText.TASKS, web_app=WebAppInfo(f"{WEB_APP_URL}/"))],
+
+def create_main_keyboard(update: Update):
+    params = urlencode(
+        {
+            "user_id": update.effective_user.id,
+            "language_code": update.effective_user.language_code,
+        }
+    )
+    return ReplyKeyboardMarkup(
         [
-            KeyboardButton(
-                ButtonText.PROFILE, web_app=WebAppInfo(f"{WEB_APP_URL}/profile")
-            )
+            [
+                KeyboardButton(
+                    ButtonText.TASKS, web_app=WebAppInfo(f"{WEB_APP_URL}/?{params}")
+                )
+            ],
+            [
+                KeyboardButton(
+                    ButtonText.PROFILE,
+                    web_app=WebAppInfo(f"{WEB_APP_URL}/profile?{params}"),
+                )
+            ],
         ],
-    ],
-    resize_keyboard=True,
-)
+        resize_keyboard=True,
+    )
+
 
 ON_BOARD_KEYBOARD = InlineKeyboardMarkup(
     [
