@@ -6,12 +6,23 @@ from src.pocketbase import Pocketbase
 POCKETBASE_URL = "http://45.143.94.202:8090"
 PB = Pocketbase(POCKETBASE_URL)
 TOKEN = os.getenv("STASK_BOT_TOKEN")
-WEB_APP_URL = "https://b3b9-188-170-86-91.ngrok-free.app"
+WEB_APP_URL = "https://362a-178-66-159-229.ngrok-free.app"
 
 
 class PocketbaseCollections:
     USERS = "users"
     ORGANIZATIONS = "organizations"
+    TASKS = "tasks"
+
+
+class WebAppActions:
+    CREATE_TASK = "create_task"
+
+
+class TaskStatuses:
+    NOT_STARTED = "not started"
+    IN_PROGRESS = "in progress"
+    DONE = "done"
 
 
 class ButtonText:
@@ -30,6 +41,7 @@ class BotReplies:
         "You was added to {organization_name} as a worker.\n Welcome to Stask!"
     )
     WELCOME = "Welcome to Stask!"
+    CREATED_TASK = "<b>New task</b> in {organization_name}!\n<b>Title:</b> {title}\n<b>Description:</b> {description}\n<b>Workers:</b> {workers}"
 
 
 class CallbackQuery:
