@@ -65,14 +65,15 @@ async def add_to_org_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
             )
         else:
             organization = organization_["items"][0]
-
             user = await fetch_user(update.effective_user.id, PB, client)
+
+            organization["workers"].append(user["id"])
 
             await PB.update_record(
                 PocketbaseCollections.ORGANIZATIONS,
                 organization["id"],
                 client,
-                workers=user["id"],
+                workers=organization["workers"],
             )
 
             await context.bot.send_message(
