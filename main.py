@@ -18,6 +18,8 @@ from src.handlers.onboard import (
     add_to_org_handler,
 )
 
+from src.handlers.web_app import web_app_data_handler
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -40,6 +42,9 @@ def main():
     )
 
     app.add_handler(onboard_conv)
+    app.add_handler(
+        MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_data_handler)
+    )
 
     while True:
         app.run_polling()
