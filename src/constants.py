@@ -6,7 +6,7 @@ from src.pocketbase import Pocketbase
 POCKETBASE_URL = "http://45.143.94.202:8090"
 PB = Pocketbase(POCKETBASE_URL)
 TOKEN = os.getenv("STASK_BOT_TOKEN")
-WEB_APP_URL = "https://362a-178-66-159-229.ngrok-free.app"
+WEB_APP_URL = "https://9a9e-188-170-81-101.ngrok-free.app"
 
 
 class PocketbaseCollections:
@@ -17,6 +17,7 @@ class PocketbaseCollections:
 
 class WebAppActions:
     CREATE_TASK = "create_task"
+    CREATE_ORGANIZATION = "create_organization"
 
 
 class TaskStatuses:
@@ -42,6 +43,7 @@ class BotReplies:
     )
     WELCOME = "Welcome to Stask!"
     CREATED_TASK = "<b>New task</b> in {organization_name}!\n<b>Title:</b> {title}\n<b>Description:</b> {description}\n<b>Workers:</b> {workers}"
+    CREATED_ORGANIZATION = "New organization - <b>{organization_name}</b> was created!\n<b>Organization referal link:</b> {ref_link}"
 
 
 class CallbackQuery:
