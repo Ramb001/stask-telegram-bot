@@ -2,7 +2,6 @@ import html
 import json
 
 import aiohttp
-from amplitude import BaseEvent
 from telegram import Update
 from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
@@ -21,6 +20,8 @@ async def web_app_data_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     action = json.loads(update.effective_message.web_app_data.data)
     if action["action"] == WebAppActions.CREATE_TASK:
         await __handle_create_task(update, context, action)
+    elif action["action"] == WebAppActions.CREATE_ORGANIZATION:
+        await __handle_create_organization(update, context, action)
 
 
 async def __handle_create_task(
@@ -80,3 +81,28 @@ async def __handle_create_task(
                 ),
                 parse_mode=ParseMode.HTML,
             )
+
+
+async def __handle_create_organization(
+    update: Update, context: ContextTypes.DEFAULT_TYPE, action: dict
+):
+    data = action["data"]
+    print(data)
+    async with aiohttp.ClientSession() as client:
+        owner = await fetch_user(data["owner"], PB, client)
+
+        await PB.add_record(
+            PocketbaseCollections.ORGANIZATIONS,
+            client,
+            name=data["name"],
+            owner=owner["id"],
+            ref_link=data["ref_link"],
+        )
+
+        await context.bot.send_message(
+            update.effective_chat.id,
+            text=BotReplies.CREATED_ORGANIZATION.format(
+                organization_name=data["name"], ref_link=data["ref_link"]
+            ),
+            parse_mode=ParseMode.HTML,
+        )
