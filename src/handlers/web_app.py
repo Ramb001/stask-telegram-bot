@@ -32,7 +32,7 @@ async def __handle_create_task(
         organization = await fetch_organization(data["organization"], PB, client)
         creator = await fetch_user(data["creator"], PB, client)
 
-        await PB.add_record(
+        test = await PB.add_record(
             PocketbaseCollections.TASKS,
             client,
             title=data["title"],
@@ -43,6 +43,7 @@ async def __handle_create_task(
             deadline=data["deadline"],
             status=TaskStatuses.NOT_STARTED,
         )
+        print(test)
 
         await context.bot.send_message(
             update.effective_chat.id,
