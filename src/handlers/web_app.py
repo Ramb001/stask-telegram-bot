@@ -29,7 +29,7 @@ async def __handle_create_task(
 ):
     data = action["data"]
     async with aiohttp.ClientSession() as client:
-        organization = await fetch_organization(data["organization"], PB, client)
+        organization = await fetch_organization(data["organization_id"], PB, client)
         creator = await fetch_user(data["creator"], PB, client)
 
         test = await PB.add_record(
@@ -37,7 +37,7 @@ async def __handle_create_task(
             client,
             title=data["title"],
             description=data["description"],
-            organization=organization["id"],
+            organization=data["organization_id"],
             creator=creator["id"],
             workers=[worker["id"] for worker in data["workers"]],
             deadline=data["deadline"],
@@ -48,7 +48,7 @@ async def __handle_create_task(
         await context.bot.send_message(
             update.effective_chat.id,
             text=BotReplies.CREATED_TASK.format(
-                organization_name=data["organization"],
+                organization_name=organization["name"],
                 title=data["title"],
                 description=data["description"],
                 workers=", ".join(
@@ -68,7 +68,7 @@ async def __handle_create_task(
             await context.bot.send_message(
                 worker["chat_id"],
                 text=BotReplies.CREATED_TASK.format(
-                    organization_name=data["organization"],
+                    organization_name=organization["name"],
                     title=data["title"],
                     description=data["description"],
                     workers=", ".join(
@@ -88,7 +88,6 @@ async def __handle_create_organization(
     update: Update, context: ContextTypes.DEFAULT_TYPE, action: dict
 ):
     data = action["data"]
-    print(data)
     async with aiohttp.ClientSession() as client:
         owner = await fetch_user(data["owner"], PB, client)
 

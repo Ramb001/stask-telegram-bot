@@ -6,7 +6,7 @@ from src.pocketbase import Pocketbase
 POCKETBASE_URL = "http://45.143.94.202:8090"
 PB = Pocketbase(POCKETBASE_URL)
 TOKEN = os.getenv("STASK_BOT_TOKEN")
-WEB_APP_URL = "https://894c-178-66-158-106.ngrok-free.app"
+WEB_APP_URL = "https://42fe-188-170-74-145.ngrok-free.app"
 
 
 class PocketbaseCollections:
@@ -27,7 +27,7 @@ class TaskStatuses:
 
 
 class ButtonText:
-    TASKS = "View tasks 💬"
+    ORGANIZATIONS = "Organizations 💼"
     PROFILE = "Profile 👨‍💻"
     YES = "Yes ✅"
     NO = "No ❌"

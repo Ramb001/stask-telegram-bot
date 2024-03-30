@@ -18,12 +18,12 @@ async def fetch_user(
 
 
 async def fetch_organization(
-    organization_name: str, pb: Pocketbase, client: aiohttp.ClientSession, **api_params
+    organization_id: str, pb: Pocketbase, client: aiohttp.ClientSession, **api_params
 ):
     organizations = await pb.fetch_records(
         PocketbaseCollections.ORGANIZATIONS,
         client,
-        filter=f"(name='{organization_name}')",
+        filter=f"(id='{organization_id}')",
         **api_params,
     )
     return organizations["items"][0]
