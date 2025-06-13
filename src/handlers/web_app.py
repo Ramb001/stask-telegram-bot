@@ -1,6 +1,6 @@
 import html
 import json
-
+import logging
 import aiohttp
 from telegram import Update
 from telegram.constants import ParseMode
@@ -52,12 +52,7 @@ async def __handle_create_task(
                 title=data["title"],
                 description=data["description"],
                 workers=", ".join(
-                    (
-                        worker["name"]
-                        if len(worker["name"]) != 0
-                        else f"@{worker['username']}"
-                    )
-                    for worker in data["workers"]
+                    f"@{worker['username']}" for worker in data["workers"]
                 ),
             ),
             parse_mode=ParseMode.HTML,

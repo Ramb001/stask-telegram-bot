@@ -22,7 +22,8 @@ def create_main_keyboard(update: Update):
         [
             [
                 KeyboardButton(
-                    ButtonText.ORGANIZATIONS, web_app=WebAppInfo(f"{WEB_APP_URL}/?{params}")
+                    ButtonText.ORGANIZATIONS,
+                    web_app=WebAppInfo(f"{WEB_APP_URL}/?{params}"),
                 )
             ],
             [
